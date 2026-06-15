@@ -1,0 +1,16 @@
+{{- range $svc := .Values.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-{{ $svc.name }}
+  labels:
+    app.kubernetes.io/name: {{ $svc.name }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ $svc.name }}
+  ports:
+    - name: http
+      port: 80
+      targetPort: {{ $.Values.defaults.port }}
+{{- end }}

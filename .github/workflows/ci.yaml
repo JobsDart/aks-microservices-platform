@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Build the service image ---
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build sample-service image
+        run: docker build -t sample-service:ci services/sample-service
+
+      # --- Validate the Helm chart ---
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+      - name: Helm lint
+        run: helm lint charts/platform
+      - name: Helm template (render must succeed)
+        run: helm template coma charts/platform > /dev/null
+
+  # On main, build & push to GHCR (gated on the validate job).
+  publish:
+    needs: build-and-validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: services/sample-service
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/sample-service:latest

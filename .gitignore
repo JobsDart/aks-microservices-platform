@@ -1,0 +1,9 @@
+bin/
+obj/
+*.user
+.vs/
+.idea/
+*.tgz
+kubeconfig
+.DS_Store
+Thumbs.db

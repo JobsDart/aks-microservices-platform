@@ -1,0 +1,47 @@
+{{- range $svc := .Values.services }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $svc.name }}
+  labels:
+    app.kubernetes.io/name: {{ $svc.name }}
+    app.kubernetes.io/part-of: coma-platform
+spec:
+  replicas: {{ $svc.replicas | default $.Values.defaults.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $svc.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $svc.name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ $.Values.defaults.port }}"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: {{ $svc.name }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $.Values.defaults.port }}
+          env:
+            - name: SERVICE_NAME
+              value: {{ $svc.name | quote }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ $.Values.defaults.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ $.Values.defaults.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+{{ toYaml $.Values.defaults.resources | indent 12 }}
+{{- end }}

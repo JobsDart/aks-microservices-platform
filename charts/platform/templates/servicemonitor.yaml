@@ -1,0 +1,20 @@
+{{- if .Values.metrics.enabled }}
+{{- range $svc := .Values.services }}
+---
+# Requires the Prometheus Operator (kube-prometheus-stack) CRDs in the cluster.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ $.Release.Name }}-{{ $svc.name }}
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $svc.name }}
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+{{- end }}
+{{- end }}

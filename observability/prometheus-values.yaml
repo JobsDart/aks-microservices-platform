@@ -1,0 +1,14 @@
+# Minimal values for the kube-prometheus-stack Helm chart.
+# Install with:
+#   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+#   helm install prometheus prometheus-community/kube-prometheus-stack -f observability/prometheus-values.yaml
+#
+# The ServiceMonitors emitted by the platform chart carry the label release: prometheus,
+# which this stack selects by default — so all four services are scraped automatically.
+grafana:
+  adminPassword: change-me
+  defaultDashboardsEnabled: true
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false   # discover ServiceMonitors cluster-wide
+    retention: 7d

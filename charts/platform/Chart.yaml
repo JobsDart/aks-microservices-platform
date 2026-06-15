@@ -1,0 +1,10 @@
+apiVersion: v2
+name: coma-platform
+description: >-
+  Helm chart deploying the CoMa microservices platform (Contract, User, Notification,
+  Integration) to Kubernetes, with Prometheus metrics and optional autoscaling.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: JobsDart

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    A deliberately small .NET 10 microservice used as the workload the platform deploys.
+    Exposes /health (for k8s probes) and /metrics (Prometheus exposition format) with
+    zero external dependencies, so it builds and runs anywhere. The same image is deployed
+    as four logical services (contract, user, notification, integration) via Helm values.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

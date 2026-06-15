@@ -1,0 +1,10 @@
+CoMa platform deployed as release "{{ .Release.Name }}".
+
+Services:
+{{- range $svc := .Values.services }}
+  - {{ $.Release.Name }}-{{ $svc.name }} (replicas: {{ $svc.replicas | default $.Values.defaults.replicas }})
+{{- end }}
+
+Check rollout:
+  kubectl get pods -l app.kubernetes.io/part-of=coma-platform
+  kubectl get svc  -l app.kubernetes.io/part-of=coma-platform

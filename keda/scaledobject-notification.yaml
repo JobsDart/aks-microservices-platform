@@ -1,0 +1,36 @@
+# KEDA event-driven autoscaling for the Notification service.
+# Scales pods on the depth of an Azure Service Bus queue — the natural fit for a
+# notification worker, and a direct mapping of the CoMa RabbitMQ/Service Bus design.
+#
+# Prereqs: KEDA installed in the cluster, and a TriggerAuthentication referencing a
+# Service Bus connection string secret (see authenticationRef below).
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: notification-scaler
+  namespace: coma
+spec:
+  scaleTargetRef:
+    name: coma-notification        # matches the Helm release-{service} Deployment name
+  minReplicaCount: 1
+  maxReplicaCount: 20
+  cooldownPeriod: 120
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        queueName: contract-events
+        messageCount: "20"          # target ~20 messages per replica
+        namespace: jobsdart-sb
+      authenticationRef:
+        name: keda-servicebus-auth
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-servicebus-auth
+  namespace: coma
+spec:
+  secretTargetRef:
+    - parameter: connection
+      name: servicebus-secret       # kubectl create secret generic servicebus-secret --from-literal=connection=...
+      key: connection

@@ -1,0 +1,36 @@
+{
+  "title": "CoMa Platform — Service Overview",
+  "uid": "coma-platform",
+  "schemaVersion": 39,
+  "tags": ["coma", "jobsdart"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Request rate (per service)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "sum by (service) (rate(app_requests_total[1m]))", "legendFormat": "{{service}}" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Service uptime (seconds)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "app_uptime_seconds", "legendFormat": "{{service}}" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Running pods (per service)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 8 },
+      "targets": [
+        { "expr": "count by (service) (app_uptime_seconds)", "legendFormat": "{{service}}" }
+      ]
+    }
+  ]
+}
