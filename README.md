@@ -12,6 +12,7 @@
   <img alt="KEDA" src="https://img.shields.io/badge/Autoscaling-KEDA-326CE5">
   <img alt="Prometheus" src="https://img.shields.io/badge/Observability-Prometheus%2BGrafana-E6522C">
   <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green">
+  <a href="https://github.com/JobsDart/aks-microservices-platform/actions"><img alt="CI" src="https://github.com/JobsDart/aks-microservices-platform/actions/workflows/ci.yaml/badge.svg"></a>
 </p>
 
 ---
