@@ -46,4 +46,4 @@ jobs:
         with:
           context: services/sample-service
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/sample-service:latest
+          tags: ghcr.io/jobsdart/sample-service:latest
